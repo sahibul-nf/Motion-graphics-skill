@@ -1,0 +1,11 @@
+{
+  "name": "Nourbit",
+  "youtube": "https://www.youtube.com/@nourbitclips-y7r",
+  "facebook": "https://www.facebook.com/nourbit.clips",
+  "endcard_watermark": "@nourbitclips",
+  "palette": {
+    "accent": null,
+    "note": "Fill from the brand's own assets (channel art/posts). Leave null rather than guessing."
+  },
+  "credit_rule": "Every clip cut from someone else's footage ends with a card crediting the source channel, and the post text repeats it."
+}
