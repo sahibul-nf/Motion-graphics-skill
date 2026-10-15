@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Usage: scripts/analyze_ref.sh ref.mp4 [outdir] -> contact sheets, cuts, spectrogram, audio (first 15 s)
-set -e; IN="$1"; O="${2:-cache/ref_$(basename "${IN%.*}")}"; mkdir -p "$O/f"
-ffprobe -v error -show_entries format=duration:stream=width,height,r_frame_rate -of compact "$IN" | tee "$O/info.txt"
-ffmpeg -v error -y -t 15 -i "$IN" -vf "fps=4,scale=270:-2" "$O/f/%03d.jpg"
-args=(); for f in "$O"/f/*.jpg; do n=$((10#$(basename "$f" .jpg))); args+=(-label "$(awk "BEGIN{printf \"%.2fs\",($n-1)/4}")" "$f"); done
-montage "${args[@]:0:60}" -tile 6x -geometry +3+3 "$O/sheet_a.jpg"
-[ ${#args[@]} -gt 60 ] && montage "${args[@]:60}" -tile 6x -geometry +3+3 "$O/sheet_b.jpg"
-ffmpeg -t 15 -i "$IN" -vf "select='gt(scene,0.3)',showinfo" -f null - 2>&1 | grep -o "pts_time:[0-9.]*" | cut -d: -f2 > "$O/cuts.txt" || true
-ffmpeg -v error -y -t 15 -i "$IN" -lavfi "showspectrumpic=s=1500x400:legend=1:scale=log:fscale=log" "$O/spectrogram.png"
-ffmpeg -v error -y -t 15 -i "$IN" -ac 1 -ar 16000 "$O/audio.wav"
-echo "Done -> $O  (view sheets + spectrogram; transcribe audio.wav with faster-whisper word_timestamps=True)"
+# Compatibility: analyze_ref.sh ref.mp4 [outdir]; flags are handled by analyze_ref.py.
+set -e
+HERE="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PY=""
+for candidate in python3 python; do
+  if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c 'import sys;sys.exit(0 if sys.version_info >= (3,10) else 1)' >/dev/null 2>&1; then PY="$candidate"; break; fi
+done
+if [ -z "$PY" ]; then echo "A working Python 3.10+ interpreter is required; select one or install with permission." >&2; exit 1; fi
+if [ "$#" -eq 2 ] && [[ "$2" != --* ]]; then exec "$PY" "$HERE/analyze_ref.py" "$1" --out "$2"; fi
+exec "$PY" "$HERE/analyze_ref.py" "$@"

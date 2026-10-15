@@ -1,0 +1,68 @@
+{
+  "release": "3.5.1",
+  "generation_route": "ElevenLabs Sound Effects API",
+  "local_analysis_tools_preserved": [
+    "CLAP",
+    "PANNs",
+    "CoNeTTE (experimental/manual)",
+    "librosa",
+    "NumPy/SciPy",
+    "FFmpeg"
+  ],
+  "new_checks": {
+    "elevenlabs_offline_and_mocked_tests_passed": 7,
+    "default_no_network": true,
+    "paid_request_consent_guard": true,
+    "missing_key_guard": true,
+    "duration_parameter_guard": true,
+    "single_request_no_retry": true,
+    "mock_response_save_and_provenance": true,
+    "invalid_response_and_timeout_cleanup": true,
+    "existing_output_not_overwritten": true,
+    "all_python_syntax_checked": true,
+    "root_and_skill_licence_identical": true,
+    "referenced_resources_exist": true,
+    "private_windows_path_scan_passed": true
+  },
+  "live_billable_generation_tested": false,
+  "api_credits_spent": false,
+  "new_models_downloaded": false,
+  "bundled_model_weights": 0,
+  "bundled_audio_files": 0,
+  "private_sfx_catalog_or_decisions_bundled": false,
+  "stable_audio_integration_included": false,
+  "entrypoint_bytes": 11289,
+  "entrypoint_words": 1497,
+  "prior_release_validation": {
+    "release": "3.4.1",
+    "scope": "Prior baseline checks are historical, not rerun for every OS in this release.",
+    "windows_relocation_and_core_helpers_previously_tested": true,
+    "full_model_inference_previously_tested": false
+  },
+  "limitations": [
+    "No live ElevenLabs request; endpoint and parameters checked against official docs, helper tested using mocks.",
+    "Provider access, credits, current terms and customer audition remain required.",
+    "Licence text preserved unchanged; no legal review performed.",
+    "Windows starter/preview smoke renders used synthetic media and existing installed tools; full macOS rendering and model inference are not tested by this patch."
+  ],
+  "helper_regression_checks": {
+    "platform": "Windows",
+    "synthetic_media_only": true,
+    "passed": 12,
+    "tests": [
+      "Python and JavaScript syntax",
+      "30+6 reference-sheet grouping and audio",
+      "Short rerun clears stale frames/sheets/audio; silent-reference skip",
+      "Missing-input failure reporting",
+      "Configured-stack preflight",
+      "Missing-tool preflight",
+      "Missing-Chromium preflight",
+      "Fractional preview timestamps",
+      "Starter browser rendering and repeated-run determinism",
+      "Preview contact sheet and audio integration",
+      "Starter H.264/yuv420p/AAC 48 kHz encoding",
+      "Existing-output overwrite guard"
+    ],
+    "no_installs_downloads_paid_calls": true
+  }
+}

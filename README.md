@@ -12,6 +12,16 @@ Plan, animate, edit, voice and sound-design complete videos with Claude Code, Co
 
 </div>
 
+## Latest version — 3.5.1
+
+Portable on-demand guides, local audio analysis and consent-gated ElevenLabs SFX generation, plus the helper fixes reported in [PR #2](https://github.com/Miftahul-Islam-Efaz/Motion-graphics-skill/pull/2). Thanks to **@Aliang-CN** for the detailed bug report, fixes and render-starter proposal. The equivalent fixes are implemented in the newer cross-platform helpers rather than merging older helper code.
+
+- Accurate preview timestamps and explicit audio inputs.
+- Reference analysis refreshes old generated outputs, groups 30 frames per sheet and clearly skips audio for silent references.
+- Setup inventory checks runtime versions and selected Playwright/Chromium file availability; a smoke test still checks actual rendering.
+- Ready-to-copy deterministic rendering starter at `skills/motion-video-director/templates/render/`.
+- No SFX collection, model weights, private credentials or customer project files are bundled.
+
 ## Overview
 
 Motion Video Director turns a coding agent into a video production team. It handles the work a motion designer, editor and sound designer would normally do:
@@ -126,27 +136,43 @@ You approve the script, the plan and the preview before the final render. Progre
   marketplace.json       Marketplace entry for one-command install
 skills/motion-video-director/
   SKILL.md               The production playbook
+  config.example.json    Optional project-local path configuration
+  LICENSE.md             Skill licence
+  reference/             On-demand production, setup, audio and delivery guides
   scripts/
-    preflight.sh         Checks Node, ffmpeg, Playwright, Python tools and API keys
-    preview.mjs          Renders a time range to a contact sheet for quick review
-    analyze_ref.sh       Breaks a reference video into frames, cuts and audio
-    create_env.sh        Creates a .env file with empty API key slots
+    preflight.py         Read-only tool/version and browser-file inventory
+    preflight.sh         Compatibility wrapper for preflight.py
+    preview.mjs          Range preview, contact sheet and optional audio clip
+    analyze_ref.py       Refreshable reference frames, cuts and optional audio
+    analyze_ref.sh       Compatibility wrapper for analyze_ref.py
+    create_env.py        Creates empty key slots without exposing values
+    create_env.sh        Legacy shell entrypoint retained
     normalize_env.py     Converts an existing key file into a clean .env
+    ...                  Local audio, procedural SFX and consent-gated API helpers
+  templates/
+    render/              Deterministic Canvas/Playwright rendering starter
+    TASTE.md             Project-specific visual and sound direction
+    design.html          Design review starter
 ```
 
 ## Requirements
 
-Required: Node.js 18+, ffmpeg and ffprobe, and Playwright with headless Chrome.
+Core helpers: Python 3.10+, FFmpeg and ffprobe. Browser rendering additionally uses Node.js 18+ and compatible Playwright/Chromium. Reuse installed tools; ask before installing or downloading anything. Pillow provides reference-sheet labels; FFmpeg provides an explicitly unlabelled fallback, so ImageMagick is optional.
 
-Optional: Python 3.10+ with `faster-whisper`, `rembg` and `demucs` for transcription, cutouts and stem separation. You can also add API keys or MCP servers for Firecrawl, Freesound, Pixabay, Unsplash and LottieFiles.
+Optional: Python packages such as `faster-whisper`, `rembg` and `demucs` for transcription, cutouts and stem separation; NumPy/SciPy and librosa/soundfile for local audio work. CLAP/PANNs are optional; CoNeTTE is experimental/manual, not a required tested integration. You can also add API keys or MCP servers for Firecrawl, Freesound, Pixabay, Unsplash and LottieFiles.
 
 To see what is installed and what is missing, run:
 
 ```bash
-bash skills/motion-video-director/scripts/preflight.sh
+python "skills/motion-video-director/scripts/preflight.py"
 ```
 
 API keys are stored in a local `.env` file, which is excluded from git.
+
+The inventory makes no installs/downloads and does not launch a browser. Browser-file presence is not a successful launch test. For a new project, copy `templates/render/` into project `src/` (never overwrite an existing renderer), set package.json `"type":"module"`, and run the smoke test in `reference/planning-and-tracking.md`. Use `--mp4 --audio <mix.wav>` for a preview with sound; `--mp4` alone is silent. No paid API call is needed for rendering.
+
+### Licence and validation
+See [LICENSE.md](LICENSE.md) for the skill licence; third-party assets/providers have separate terms. [RELEASE_CHECKS.json](RELEASE_CHECKS.json) records the validation scope. The helper regression suite passed on Windows with synthetic media; full macOS rendering and model inference are not claimed tested.
 
 ## FAQ
 
